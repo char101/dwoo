@@ -128,8 +128,11 @@ class Loader implements ILoader
          * usually means that the cache is stale and must be rebuilt,
          * so we check for that before trying to include() the plugin.
          */
-        if ((!isset($this->classPath[$class]) || !is_readable($this->classPath[$class])) || (!isset
-                ($this->classPath[$class . 'Compile']) || !is_readable($this->classPath[$class . 'Compile']))) {
+        if (isset($this->classPath[$class]) && is_readable($this->classPath[$class])) {
+            include_once $this->classPath[$class];
+        } elseif (isset($this->classPath[$class . 'Compile']) && is_readable($this->classPath[$class . 'Compile'])) {
+            include_once $this->classPath[$class . 'Compile'];
+        } else {
             if ($forceRehash) {
                 $this->rebuildClassPathCache($this->corePluginDir, $this->cacheDir . 'classpath.cache.d' .
                     Core::RELEASE_TAG . '.php');
